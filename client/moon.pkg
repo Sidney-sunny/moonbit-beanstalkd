@@ -1,0 +1,4 @@
+import {
+  "sideny-sunny/beanstalkd/protocol",
+  "moonbitlang/core/debug",
+}

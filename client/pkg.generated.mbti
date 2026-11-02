@@ -1,0 +1,40 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "sideny-sunny/beanstalkd/client"
+
+import {
+  "moonbitlang/core/debug",
+  "sideny-sunny/beanstalkd/protocol",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+pub(all) enum ClientError {
+  Busy
+  Closed
+  Protocol(@protocol.ProtocolError)
+  UnexpectedReply
+  UnsolicitedData
+} derive(Eq, @debug.Debug)
+pub fn ClientError::equal(Self, Self) -> Bool
+pub fn ClientError::not_equal(Self, Self) -> Bool
+pub fn ClientError::to_repr(Self) -> @debug.Repr
+
+pub struct Session {
+  // private fields
+}
+pub fn Session::begin(Self, @protocol.Command) -> Result[Bytes, ClientError]
+pub fn Session::feed(Self, Bytes) -> Result[@protocol.Reply?, ClientError]
+pub fn Session::finish(Self) -> Result[Unit, ClientError]
+pub fn Session::invalidate(Self) -> Unit
+pub fn Session::is_busy(Self) -> Bool
+pub fn Session::is_usable(Self) -> Bool
+pub fn Session::new(max_header? : Int32, max_body? : Int32, max_buffer? : Int32) -> Self
+pub fn Session::used_tube(Self) -> String
+pub fn Session::watching_count(Self) -> UInt64
+
+// Type aliases
+
+// Traits
