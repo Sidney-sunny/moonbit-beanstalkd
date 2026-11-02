@@ -1,0 +1,109 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "sideny-sunny/beanstalkd/protocol"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn encode(Command) -> Result[Bytes, ProtocolError]
+
+pub fn parse_stats(Bytes) -> Result[Map[String, String], ProtocolError]
+
+pub fn parse_tubes(Bytes) -> Result[Array[String], ProtocolError]
+
+// Errors
+
+// Types and methods
+pub(all) enum Command {
+  Use(String)
+  Watch(String)
+  Ignore(String)
+  Put(UInt32, UInt32, UInt32, Bytes)
+  ReserveWithTimeout(UInt32)
+  Delete(UInt64)
+  Release(UInt64, UInt32, UInt32)
+  Bury(UInt64, UInt32)
+  Kick(UInt32)
+  KickJob(UInt64)
+  Touch(UInt64)
+  Peek(UInt64)
+  PeekReady
+  PeekDelayed
+  PeekBuried
+  Stats
+  StatsJob(UInt64)
+  StatsTube(String)
+  ListTubes
+  ListTubeUsed
+  ListTubesWatched
+} derive(Eq, @debug.Debug)
+pub fn Command::equal(Self, Self) -> Bool
+pub fn Command::not_equal(Self, Self) -> Bool
+pub fn Command::to_repr(Self) -> @debug.Repr
+
+pub struct Decoder {
+  // private fields
+}
+pub fn Decoder::buffered_bytes(Self) -> Int32
+pub fn Decoder::feed(Self, Bytes) -> Result[Unit, ProtocolError]
+pub fn Decoder::finish(Self) -> Result[Unit, ProtocolError]
+pub fn Decoder::new(max_header? : Int32, max_body? : Int32, max_buffer? : Int32) -> Self
+pub fn Decoder::take(Self) -> Result[Reply?, ProtocolError]
+
+pub(all) enum ProtocolError {
+  InvalidTube(String)
+  InvalidLimits
+  HeaderTooLong(Int32)
+  BodyTooLarge(UInt64)
+  BufferTooLarge(Int32)
+  MalformedHeader(String)
+  IntegerOverflow(String)
+  InvalidCrlf
+  Truncated
+  InvalidYaml(String)
+} derive(Eq, @debug.Debug)
+pub fn ProtocolError::equal(Self, Self) -> Bool
+pub fn ProtocolError::not_equal(Self, Self) -> Bool
+pub fn ProtocolError::to_repr(Self) -> @debug.Repr
+
+pub(all) enum Reply {
+  Inserted(UInt64)
+  Buried(UInt64)
+  Reserved(UInt64, Bytes)
+  Found(UInt64, Bytes)
+  Using(String)
+  Watching(UInt64)
+  Kicked(UInt64)
+  Ok(Bytes)
+  Status(ServerStatus)
+} derive(Eq, @debug.Debug)
+pub fn Reply::equal(Self, Self) -> Bool
+pub fn Reply::not_equal(Self, Self) -> Bool
+pub fn Reply::to_repr(Self) -> @debug.Repr
+
+pub(all) enum ServerStatus {
+  Deleted
+  Released
+  Buried
+  Kicked
+  Touched
+  TimedOut
+  DeadlineSoon
+  NotFound
+  NotIgnored
+  JobTooBig
+  Draining
+  ExpectedCrlf
+  OutOfMemory
+  InternalError
+  BadFormat
+  UnknownCommand
+} derive(Eq, @debug.Debug)
+pub fn ServerStatus::equal(Self, Self) -> Bool
+pub fn ServerStatus::not_equal(Self, Self) -> Bool
+pub fn ServerStatus::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

@@ -1,0 +1,12 @@
+_build/
+.moon/
+.private/
+node_modules/
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+
+# Repository documentation is maintained in English.
+*_zh.md

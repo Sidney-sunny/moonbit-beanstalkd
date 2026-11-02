@@ -1,0 +1,2 @@
+scenarios/fixtures/*.csv text eol=lf
+scenarios/fixtures/*.json text eol=lf
