@@ -1,0 +1,11 @@
+import {
+  "moonbitlang/core/async/js_async",
+}
+
+import {
+  "moonbitlang/core/async",
+} for "test"
+
+options(
+  supported_targets: "js",
+)

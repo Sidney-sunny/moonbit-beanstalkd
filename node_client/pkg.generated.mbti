@@ -1,0 +1,102 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "sideny-sunny/beanstalkd/node_client"
+
+import {
+  "moonbitlang/core/debug",
+  "sideny-sunny/beanstalkd/client",
+  "sideny-sunny/beanstalkd/protocol",
+}
+
+// Values
+pub async fn connect(String, Int32, timeout_ms? : Int32, max_body? : Int32) -> Client
+
+// Errors
+pub suberror OperationError {
+  ServerRejected(@protocol.ServerStatus)
+  InvalidDocument(@protocol.ProtocolError)
+  UnexpectedResponse
+} derive(@debug.Debug)
+pub fn OperationError::to_repr(Self) -> @debug.Repr
+
+pub suberror RequestError {
+  SessionFailure(@client.ClientError)
+  InvalidArgument(String)
+} derive(@debug.Debug)
+pub fn RequestError::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+pub struct Client {
+  // private fields
+}
+pub async fn Client::bury(Self, UInt64, priority? : UInt32, timeout_ms? : Int32) -> Bool
+pub fn Client::close(Self) -> Unit
+pub async fn Client::delete(Self, UInt64, timeout_ms? : Int32) -> Bool
+pub async fn Client::execute(Self, @protocol.Command, timeout_ms? : Int32) -> @protocol.Reply
+pub async fn Client::ignore_tube(Self, String, timeout_ms? : Int32) -> IgnoreOutcome
+pub fn Client::is_open(Self) -> Bool
+pub async fn Client::kick(Self, UInt32, timeout_ms? : Int32) -> UInt64
+pub async fn Client::kick_job(Self, UInt64, timeout_ms? : Int32) -> Bool
+pub async fn Client::list_tube_used(Self, timeout_ms? : Int32) -> String
+pub async fn Client::list_tubes(Self, timeout_ms? : Int32) -> Array[String]
+pub async fn Client::list_tubes_watched(Self, timeout_ms? : Int32) -> Array[String]
+pub async fn Client::peek(Self, UInt64, timeout_ms? : Int32) -> Job?
+pub async fn Client::peek_buried(Self, timeout_ms? : Int32) -> Job?
+pub async fn Client::peek_delayed(Self, timeout_ms? : Int32) -> Job?
+pub async fn Client::peek_ready(Self, timeout_ms? : Int32) -> Job?
+pub async fn Client::put(Self, Bytes, priority? : UInt32, delay? : UInt32, ttr? : UInt32, timeout_ms? : Int32) -> PutOutcome
+pub async fn Client::release(Self, UInt64, priority? : UInt32, delay? : UInt32, timeout_ms? : Int32) -> ReleaseOutcome
+pub async fn Client::reserve(Self, timeout_seconds? : UInt32, timeout_ms? : Int32) -> ReserveOutcome
+pub async fn Client::stats(Self, timeout_ms? : Int32) -> Map[String, String]
+pub async fn Client::stats_job(Self, UInt64, timeout_ms? : Int32) -> Map[String, String]?
+pub async fn Client::stats_tube(Self, String, timeout_ms? : Int32) -> Map[String, String]?
+pub async fn Client::touch(Self, UInt64, timeout_ms? : Int32) -> Bool
+pub async fn Client::use_tube(Self, String, timeout_ms? : Int32) -> String
+pub fn Client::used_tube(Self) -> String
+pub async fn Client::watch(Self, String, timeout_ms? : Int32) -> UInt64
+pub fn Client::watching_count(Self) -> UInt64
+
+pub(all) enum IgnoreOutcome {
+  Watching(UInt64)
+  NotIgnored
+} derive(Eq, @debug.Debug)
+pub fn IgnoreOutcome::equal(Self, Self) -> Bool
+pub fn IgnoreOutcome::not_equal(Self, Self) -> Bool
+pub fn IgnoreOutcome::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Job {
+  id : UInt64
+  body : Bytes
+} derive(Eq, @debug.Debug)
+pub fn Job::equal(Self, Self) -> Bool
+pub fn Job::not_equal(Self, Self) -> Bool
+pub fn Job::to_repr(Self) -> @debug.Repr
+
+pub(all) enum PutOutcome {
+  Inserted(UInt64)
+  Buried(UInt64)
+} derive(Eq, @debug.Debug)
+pub fn PutOutcome::equal(Self, Self) -> Bool
+pub fn PutOutcome::not_equal(Self, Self) -> Bool
+pub fn PutOutcome::to_repr(Self) -> @debug.Repr
+
+pub(all) enum ReleaseOutcome {
+  Released
+  Buried
+  NotFound
+} derive(Eq, @debug.Debug)
+pub fn ReleaseOutcome::equal(Self, Self) -> Bool
+pub fn ReleaseOutcome::not_equal(Self, Self) -> Bool
+pub fn ReleaseOutcome::to_repr(Self) -> @debug.Repr
+
+pub(all) enum ReserveOutcome {
+  Reserved(Job)
+  TimedOut
+  DeadlineSoon
+} derive(Eq, @debug.Debug)
+pub fn ReserveOutcome::equal(Self, Self) -> Bool
+pub fn ReserveOutcome::not_equal(Self, Self) -> Bool
+pub fn ReserveOutcome::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

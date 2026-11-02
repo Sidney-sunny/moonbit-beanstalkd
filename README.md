@@ -1,6 +1,6 @@
 # MoonBit Beanstalkd Client
 
-A MoonBit Beanstalkd protocol and session library, with binary-safe job bodies, bounded decoding, and ordered request/reply exchanges.
+A binary-safe MoonBit Beanstalkd client with Node.js TCP transport and portable protocol/session packages.
 
 ## Protocol Responsibilities
 
@@ -8,11 +8,17 @@ The `protocol/` package encodes typed commands and decodes server replies withou
 
 Decoding accepts fragmented input and enforces limits on response headers, declared bodies, and retained data. Malformed framing, invalid integers, and resource limits produce structured errors. Statistics and tube lists support the YAML subset defined by Beanstalkd, rather than a general YAML parser.
 
-The package contains no socket access, queue server, scheduler, or automatic job replay. It runs on the JavaScript and wasm-gc targets.
+The protocol package contains no socket access, queue server, scheduler, or automatic job replay. It runs on the JavaScript and wasm-gc targets.
 
 ## Ordered Sessions
 
 The `client/` package matches one command with its expected response at a time, tracks the selected tube and watched-tube count, and rejects concurrent or unsolicited exchanges. Invalid framing or a mismatched reply invalidates the session. Transport adapters explicitly invalidate a session after an uncertain exchange; jobs are never replayed automatically.
+
+## Node.js Client
+
+`node_tcp/` supplies a socket boundary with an absolute request deadline, cancellation, backpressure handling, and connection invalidation. `node_client/` combines it with the portable session and exposes typed job, tube, statistics, and inspection operations. Socket-dependent packages target JavaScript; portable protocol and session packages also target wasm-gc.
+
+The lifecycle example connects to pinned Beanstalkd 1.13 and checks binary submission, reservation, touch, release, bury, peek, kick, deletion, and tube cleanup. The server runner verifies its source checksum, refuses occupied ports, limits execution time, and stops only its own server process.
 
 ## Build and Test
 
@@ -21,12 +27,21 @@ Use the MoonBit versions recorded in `toolchain.json`.
 ```sh
 moon fmt --check
 moon check --target js --deny-warn
-moon test --target js --deny-warn
+node scripts/with-beanstalkd.mjs -- moon test --target js --deny-warn
 moon check --target wasm-gc --deny-warn
 moon test --target wasm-gc --deny-warn
 ```
 
 The protocol tests check literal command/reply records, binary payloads, integer boundaries, every single decoder split point, byte-at-a-time input, and malformed or oversized responses. Tests adapted from the pinned Go client provide an independent reference.
+
+Run the socket bridge and runner checks, then the lifecycle example:
+
+```sh
+node --test node_tcp/bridge_test.mjs scripts/runner_test.mjs
+node scripts/with-beanstalkd.mjs -- moon run examples/lifecycle --target js
+```
+
+Building the pinned server requires `make`, a C compiler, and `tar`. On Windows the runner uses the existing Debian WSL distribution. Generated files stay under ignored `_build/`.
 
 ## Specification and License
 

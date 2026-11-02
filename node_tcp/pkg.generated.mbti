@@ -1,0 +1,33 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "sideny-sunny/beanstalkd/node_tcp"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub async fn connect(String, Int32, timeout_ms? : Int32) -> Connection
+
+// Errors
+pub suberror TransportError {
+  TransportError(String, String)
+} derive(@debug.Debug)
+pub fn TransportError::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+#external
+pub type Connection
+pub fn Connection::begin_request(Self, timeout_ms? : Int32) -> Request raise TransportError
+pub fn Connection::close(Self) -> Unit
+pub fn Connection::finish_request(Self, Request) -> Unit raise TransportError
+pub fn Connection::invalidate(Self) -> Unit
+pub fn Connection::is_open(Self) -> Bool
+pub async fn Connection::read(Self, Request) -> Bytes
+pub async fn Connection::write(Self, Request, Bytes) -> Unit
+
+#external
+pub type Request
+
+// Type aliases
+
+// Traits

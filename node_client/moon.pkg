@@ -1,0 +1,13 @@
+import {
+  "sideny-sunny/beanstalkd/protocol",
+  "sideny-sunny/beanstalkd/client",
+  "sideny-sunny/beanstalkd/node_tcp",
+  "moonbitlang/core/debug",
+}
+
+import {
+  "moonbitlang/core/async",
+  "moonbitlang/core/async/js_async",
+} for "test"
+
+supported_targets = "js"

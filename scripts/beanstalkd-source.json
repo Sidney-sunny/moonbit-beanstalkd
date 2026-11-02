@@ -1,0 +1,8 @@
+{
+  "version": "1.13",
+  "tag": "v1.13",
+  "commit": "9cceb0dde8d7d224707a1cf2ff0d642ad6c51ce6",
+  "url": "https://github.com/beanstalkd/beanstalkd/archive/refs/tags/v1.13.tar.gz",
+  "sha256": "26292dcdc0a7011d2f8ad968612f2cd8b2ef07687224876015399ae85e9e5263",
+  "releaseNotes": "https://beanstalkd.github.io/2023/03/12/1.13-release-notes.html"
+}
