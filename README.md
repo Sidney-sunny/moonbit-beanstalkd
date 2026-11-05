@@ -43,6 +43,10 @@ node scripts/with-beanstalkd.mjs -- moon run examples/lifecycle --target js
 
 Building the pinned server requires `make`, a C compiler, and `tar`. On Windows the runner uses the existing Debian WSL distribution. Generated files stay under ignored `_build/`.
 
+## Interoperability
+
+[Go interoperability](interop/README.md) checks exact binary payloads and job IDs in both producer/consumer directions against a pinned independent client. Run `node scripts/with-beanstalkd.mjs -- node interop/run.mjs`.
+
 ## Specification and License
 
 The implementation follows the [Beanstalkd 1.13 protocol](https://github.com/beanstalkd/beanstalkd/blob/v1.13/doc/protocol.txt). Adapted test records come from [go-beanstalk](https://github.com/beanstalkd/go-beanstalk/tree/52e4a01c453b3de42105389beb2374f256751064); their original MIT notice and provenance are preserved in [protocol/NOTICE](protocol/NOTICE).

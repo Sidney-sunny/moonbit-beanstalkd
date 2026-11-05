@@ -1,0 +1,19 @@
+{
+  "reference_client": {
+    "module": "github.com/beanstalkd/go-beanstalk",
+    "revision": "52e4a01c453b3de42105389beb2374f256751064",
+    "resolved_version": "v0.2.0",
+    "module_sum": "h1:6UOJugnu47uNB2jJO/lxyDgeD1Yds7owYi1USELqexA=",
+    "go_mod_sum": "h1:/G8YTyChOtpOArwLTQPY1CHB+i212+av35bkPXXj56Y=",
+    "resolution_command": "go get github.com/beanstalkd/go-beanstalk@52e4a01c453b3de42105389beb2374f256751064",
+    "license_notice": "../protocol/NOTICE"
+  },
+  "fixture": {
+    "path": "fixtures/binary-task.hex",
+    "encoding": "lowercase hex; trailing newline is not payload",
+    "decoded_bytes": 14,
+    "decoded_sha256": "30578b78654dabfe765ca5ee6f4bc1a43713ea6cee90a8f7d0fd898bb8fa063f",
+    "origin": "Original fixture authored for this repository; contains NUL, CRLF, and non-UTF8 bytes"
+  },
+  "scope": "Bidirectional real-server binary interoperability with touch, delete, and empty-queue verification; not a complete worker framework or all planned application scenarios"
+}

@@ -1,0 +1,10 @@
+import {
+  "sideny-sunny/beanstalkd/protocol",
+  "sideny-sunny/beanstalkd/node_client",
+  "moonbitlang/core/string",
+  "moonbitlang/core/async",
+}
+
+supported_targets = "js"
+
+pkgtype(kind: "executable")
