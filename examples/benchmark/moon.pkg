@@ -1,0 +1,7 @@
+import {
+  "sideny-sunny/beanstalkd/protocol",
+}
+
+supported_targets = "js"
+
+pkgtype(kind: "executable")

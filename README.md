@@ -53,6 +53,10 @@ Building the pinned server requires `make`, a C compiler, and `tar`. On Windows 
 - [Delayed retry and quarantine](scenarios/RETRY_QUARANTINE.md): release with a delay, inspect server state, and explicitly recover an invalid job without executing it
 - [Touch and TTR expiry](scenarios/TTR.md): extend a reservation, observe expiry through an independent connection, and verify ownership transfer
 
+## Protocol Baseline
+
+[Benchmark](benchmark/README.md) the local binary encoder and bounded decoder with `node benchmark/run.mjs`. This measures a single JS process, including allocation and validation; it makes no TCP throughput claim.
+
 ## Specification and License
 
 The implementation follows the [Beanstalkd 1.13 protocol](https://github.com/beanstalkd/beanstalkd/blob/v1.13/doc/protocol.txt). Adapted test records come from [go-beanstalk](https://github.com/beanstalkd/go-beanstalk/tree/52e4a01c453b3de42105389beb2374f256751064); their original MIT notice and provenance are preserved in [protocol/NOTICE](protocol/NOTICE).
