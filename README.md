@@ -65,6 +65,10 @@ Building the pinned server requires `make`, a C compiler, and `tar`. On Windows 
 
 Run `node scripts/verify.mjs` for formatting, strict builds, tests, real-server scenarios, package consumption, and the protocol baseline. It requires the versions in `toolchain.json`, Go, and the server build prerequisites. The GitHub workflow runs these checks with pinned toolchains.
 
+## Contributing
+
+See [Repository Guidelines](AGENTS.md), [API](docs/API.md), [scope](docs/POSITIONING.md), [acceptance criteria](docs/ACCEPTANCE.md), and [verification](docs/VERIFICATION.md). [Research](docs/RESEARCH.md) records a dated search snapshot; it does not establish universal absence of other implementations.
+
 ## Specification and License
 
 The implementation follows the [Beanstalkd 1.13 protocol](https://github.com/beanstalkd/beanstalkd/blob/v1.13/doc/protocol.txt). Adapted test records come from [go-beanstalk](https://github.com/beanstalkd/go-beanstalk/tree/52e4a01c453b3de42105389beb2374f256751064); their original MIT notice and provenance are preserved in [protocol/NOTICE](protocol/NOTICE).

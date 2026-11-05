@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "audited_on": "2026-11-01",
+  "timezone": "Asia/Shanghai",
+  "status": "historical_research_snapshot_not_current_project_status",
+  "historical_project_status": "project_initiation_only_not_implemented_at_audit_date",
+  "maintenance_note": "Documentation clarified on 2026-11-05 without new searches. Observations, implementation status and estimates refer to audited_on, not a later source revision.",
+  "candidate": "MoonBit Beanstalkd Client",
+  "decision": "recommend_independent_client_subject_to_day_one_tcp_gate",
+  "conclusion": "No equivalent public MoonBit Beanstalkd client was located in the searched registry, repositories and indexed code. This is not proof that no implementation exists.",
+  "limitations": [
+    "Private, unpublished, unindexed and new repositories may exist.",
+    "GitHub code search omitted other known MoonBit libraries during this audit; zero hits are not conclusive.",
+    "At the audit date, implementation, compile and live-server checks had not yet occurred.",
+    "The complete registry response is not included in this repository; summarized observations cannot reconstruct that response."
+  ],
+  "registry": {
+    "url": "https://mooncakes.io/api/v0/modules",
+    "snapshot": null,
+    "original_snapshot_name": "mooncakes_modules_2026-11-01.json",
+    "snapshot_availability": "not included in this repository; no full registry response is available here",
+    "module_count": 3518,
+    "fields": [
+      "name",
+      "description",
+      "keywords"
+    ],
+    "keywords": [
+      "beanstalk",
+      "beanstalkd",
+      "tube queue"
+    ],
+    "matching_modules": []
+  },
+  "repository_search": [
+    {
+      "query": "beanstalk language:MoonBit",
+      "total": 0
+    },
+    {
+      "query": "beanstalk moonbit",
+      "total": 0
+    },
+    {
+      "query": "beanstalkd moonbit",
+      "total": 0
+    },
+    {
+      "query": "\"work queue\" language:MoonBit",
+      "total": 0
+    }
+  ],
+  "code_search": [
+    {
+      "query": "beanstalkd language:MoonBit",
+      "url": "https://api.github.com/search/code?q=beanstalkd%20language%3AMoonBit",
+      "total": 0,
+      "incomplete": false,
+      "items": [],
+      "error": null
+    },
+    {
+      "query": "\"reserve-with-timeout\" language:MoonBit",
+      "url": "https://api.github.com/search/code?q=%22reserve-with-timeout%22%20language%3AMoonBit",
+      "total": 0,
+      "incomplete": false,
+      "items": [],
+      "error": null
+    },
+    {
+      "query": "\"beanstalkd\" extension:mbt",
+      "total": 0,
+      "items": []
+    }
+  ],
+  "false_positive": {
+    "query": "beanstalk language:MoonBit",
+    "total": 1,
+    "repository": "ZSeanYves/MoonbitHTTP",
+    "path": "policy/cookie/psl_data.mbt",
+    "commit": "0967034f11983b5a53f1843470c21ecc6512a4a7",
+    "blob_sha": "a41438b29f38f970e1c9955d00da51bb11a62bc9",
+    "url": "https://github.com/ZSeanYves/MoonbitHTTP/blob/0967034f11983b5a53f1843470c21ecc6512a4a7/policy/cookie/psl_data.mbt",
+    "inspection_result": "AWS Elastic Beanstalk public suffix domains; not a job queue client"
+  },
+  "web_queries": [
+    "\"beanstalk\" \"MoonBit\" -elasticbeanstalk",
+    "site:github.com \"moonbit\" \"beanstalkd\"",
+    "\"beanstalkd\" \"mbt\"",
+    "\"beanstalkd\" \"moon.mod\"",
+    "\"beanstalk\" \"mooncakes\""
+  ],
+  "upstream": {
+    "repository": "beanstalkd/go-beanstalk",
+    "commit": "52e4a01c453b3de42105389beb2374f256751064",
+    "license": "MIT",
+    "license_path": "License",
+    "license_blob_sha": "183c3898c36b066c3fc7c145c8ee76c6389762aa",
+    "tests_path": "conn_test.go",
+    "tests_blob_sha": "6cd5009e72cb94fa2cdb151c4722141d20940990",
+    "tests_url": "https://github.com/beanstalkd/go-beanstalk/blob/52e4a01c453b3de42105389beb2374f256751064/conn_test.go",
+    "protocol_url": "https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt",
+    "protocol_blob_sha": "0bcbde05c625b3142bd9cbca8eb57f0c4275ae82"
+  },
+  "adoption": [
+    {
+      "url": "https://laravel.com/docs/12.x/queues",
+      "fact": "Laravel 12 includes a Beanstalkd queue driver"
+    },
+    {
+      "url": "https://packagist.org/packages/pda/pheanstalk.json",
+      "package": "pda/pheanstalk",
+      "downloads_total": 35463810,
+      "downloads_monthly": 680207,
+      "downloads_daily": 8878,
+      "caveat": "Package install events are not unique users and do not predict MoonBit demand."
+    }
+  ],
+  "architecture": {
+    "core": "Pure MoonBit codec and ordered client",
+    "transport": "Replaceable connection boundary",
+    "primary_adapter": "Planned Node.js TCP adapter, JS target; unverified at the audit date",
+    "core_targets": [
+      "js",
+      "wasm-gc"
+    ],
+    "deferred": [
+      "native socket portability",
+      "browser TCP",
+      "Android embedding",
+      "connection pool",
+      "automatic mutation replay"
+    ]
+  },
+  "estimate": {
+    "workdays_min": 6,
+    "workdays_max": 9,
+    "hours_per_day": 8,
+    "hours_min": 48,
+    "hours_max": 72,
+    "assumption": "Developer already familiar with MoonBit; day-one TCP/toolchain gate passes; tests and docs included."
+  }
+}
