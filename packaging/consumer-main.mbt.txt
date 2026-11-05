@@ -1,0 +1,38 @@
+///|
+extern "js" fn env(name : String, fallback : String) -> String =
+  #| (name, fallback) => process.env[name] ?? fallback
+
+///|
+extern "js" fn tube_name() -> String =
+  #| () => `package-consumer-${process.pid}-${Date.now()}`
+
+///|
+async fn main {
+  let host = env("BEANSTALKD_HOST", "127.0.0.1")
+  let port = @string.parse_int(env("BEANSTALKD_PORT", "11300"))
+  let producer = @node_client.connect(host, port)
+  defer producer.close()
+  let worker = @node_client.connect(host, port)
+  defer worker.close()
+  let tube = tube_name()
+  let body = b"archive\x00\r\n\xffjob"
+  assert_eq(producer.execute(@protocol.Use(tube)), @protocol.Using(tube))
+  assert_eq(worker.execute(@protocol.Watch(tube)), @protocol.Watching(2UL))
+  assert_eq(worker.execute(@protocol.Ignore("default")), @protocol.Watching(1UL))
+  let id = match producer.execute(@protocol.Put(0U, 0U, 30U, body)) {
+    Inserted(id) => id
+    _ => fail("expected INSERTED")
+  }
+  match worker.execute(@protocol.ReserveWithTimeout(1U)) {
+    Reserved(actual_id, actual_body) => {
+      assert_eq(actual_id, id)
+      assert_eq(actual_body, body)
+    }
+    _ => fail("expected RESERVED")
+  }
+  assert_eq(worker.execute(@protocol.Touch(id)), @protocol.Status(Touched))
+  assert_eq(worker.execute(@protocol.Delete(id)), @protocol.Status(Deleted))
+  assert_eq(producer.execute(@protocol.Peek(id)), @protocol.Status(NotFound))
+  assert_eq(worker.execute(@protocol.ReserveWithTimeout(0U)), @protocol.Status(TimedOut))
+  println("local package consumer ok: separate producer/worker connections; binary bytes and ID preserved; queue empty")
+}
