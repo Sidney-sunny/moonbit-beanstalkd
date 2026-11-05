@@ -51,6 +51,7 @@ Building the pinned server requires `make`, a C compiler, and `tar`. On Windows 
 
 - [CSV import](scenarios/CSV_IMPORT.md): a separate producer and worker validate an allowlisted fixture and count rows in MoonBit
 - [Delayed retry and quarantine](scenarios/RETRY_QUARANTINE.md): release with a delay, inspect server state, and explicitly recover an invalid job without executing it
+- [Touch and TTR expiry](scenarios/TTR.md): extend a reservation, observe expiry through an independent connection, and verify ownership transfer
 
 ## Specification and License
 
