@@ -21,7 +21,7 @@ pub struct Session {
   priv mut pending : @protocol.Command?
   priv mut usable : Bool
   priv mut used_tube : String
-  priv mut watching : UInt64
+  priv watched : Map[String, Bool]
 }
 
 ///|
@@ -35,7 +35,7 @@ pub fn Session::new(
     pending: None,
     usable: true,
     used_tube: "default",
-    watching: 1UL,
+    watched: Map([("default", true)]),
   }
 }
 
@@ -56,7 +56,7 @@ pub fn Session::used_tube(self : Session) -> String {
 
 ///|
 pub fn Session::watching_count(self : Session) -> UInt64 {
-  self.watching
+  self.watched.length().to_uint64()
 }
 
 ///|
@@ -89,11 +89,23 @@ pub fn Session::begin(
 }
 
 ///|
-fn accepts(command : @protocol.Command, reply : @protocol.Reply) -> Bool {
+fn Session::accepts(
+  self : Session,
+  command : @protocol.Command,
+  reply : @protocol.Reply,
+) -> Bool {
   match (command, reply) {
     (Use(tube), Using(actual)) => tube == actual
     (ListTubeUsed, Using(_)) => true
-    (Watch(_), Watching(count)) | (Ignore(_), Watching(count)) => count > 0UL
+    (Watch(tube), Watching(count)) =>
+      count ==
+      self.watching_count() +
+      (if self.watched.contains(tube) { 0UL } else { 1UL })
+    (Ignore(tube), Watching(count)) =>
+      count > 0UL &&
+      count ==
+      self.watching_count() -
+      (if self.watched.contains(tube) { 1UL } else { 0UL })
     (Put(_, _, _, _), Inserted(_) | Buried(_)) => true
     (Reserve | ReserveWithTimeout(_), Reserved(_, _)) => true
     (ReserveJob(expected_id), Reserved(actual_id, _)) =>
@@ -108,7 +120,8 @@ fn accepts(command : @protocol.Command, reply : @protocol.Reply) -> Bool {
         (_, OutOfMemory | InternalError | BadFormat | UnknownCommand) => true
         (Put(_, _, _, _), JobTooBig | Draining | ExpectedCrlf) => true
         (Reserve | ReserveWithTimeout(_), TimedOut | DeadlineSoon) => true
-        (Ignore(_), NotIgnored) => true
+        (Ignore(tube), NotIgnored) =>
+          self.watching_count() == 1UL && self.watched.contains(tube)
         (ReserveJob(_), NotFound) => true
         (Delete(_), Deleted | NotFound) => true
         (Release(_, _, _), Released | Buried | NotFound) => true
@@ -162,7 +175,7 @@ pub fn Session::feed(
     }
     Ok(None) => Ok(None)
     Ok(Some(reply)) => {
-      if !accepts(command, reply) {
+      if !self.accepts(command, reply) {
         self.invalidate()
         return Err(UnexpectedReply)
       }
@@ -170,9 +183,10 @@ pub fn Session::feed(
         self.invalidate()
         return Err(UnsolicitedData)
       }
-      match reply {
-        Using(tube) => self.used_tube = tube
-        Watching(count) => self.watching = count
+      match (command, reply) {
+        (_, Using(tube)) => self.used_tube = tube
+        (Watch(tube), Watching(_)) => self.watched[tube] = true
+        (Ignore(tube), Watching(_)) => self.watched.remove(tube)
         _ => ()
       }
       self.pending = None

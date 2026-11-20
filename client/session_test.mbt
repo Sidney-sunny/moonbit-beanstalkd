@@ -116,3 +116,25 @@ test "invalid decoder limits reject publication before a request becomes busy" {
     assert_false(session.is_busy())
   }
 }
+
+///|
+test "watch acknowledgements reflect additions, no-ops, and last-tube refusal" {
+  let session = @client.Session::new()
+  ignore(session.begin(@protocol.Watch("default")))
+  assert_eq(session.feed(b"WATCHING 1\r\n"), Ok(Some(@protocol.Watching(1UL))))
+  ignore(session.begin(@protocol.Ignore("absent")))
+  assert_eq(session.feed(b"WATCHING 1\r\n"), Ok(Some(@protocol.Watching(1UL))))
+  ignore(session.begin(@protocol.Ignore("default")))
+  assert_eq(
+    session.feed(b"NOT_IGNORED\r\n"),
+    Ok(Some(@protocol.Status(NotIgnored))),
+  )
+  ignore(session.begin(@protocol.Watch("imports")))
+  assert_eq(session.feed(b"WATCHING 2\r\n"), Ok(Some(@protocol.Watching(2UL))))
+  ignore(session.begin(@protocol.Ignore("default")))
+  assert_eq(session.feed(b"WATCHING 1\r\n"), Ok(Some(@protocol.Watching(1UL))))
+  ignore(session.begin(@protocol.Watch("imports")))
+  assert_eq(session.feed(b"WATCHING 2\r\n"), Err(@client.UnexpectedReply))
+  assert_eq(session.watching_count(), 1UL)
+  assert_false(session.is_usable())
+}

@@ -31,7 +31,7 @@ The typed `Client` helpers avoid manual reply matching for common operations:
 | `put`, `reserve`, `reserve_blocking`, `release` | `PutOutcome`, `ReserveOutcome`, `ReleaseOutcome`; buried acceptance, timeout, deadline-soon, and not-found remain distinct |
 | `reserve_job` | Optional `Job` for a specific ID. `None` means the server returned `NOT_FOUND` |
 | `delete`, `bury`, `touch`, `kick_job`; `kick` | Boolean for success/not-found; count for batch kick |
-| `use_tube`, `watch`, `ignore_tube`, `list_tube_used`, `list_tubes`, `list_tubes_watched` | Selected name, watch count, explicit `NotIgnored`, or tube-name array |
+| `use_tube`, `watch`, `ignore_tube`, `list_tube_used`, `list_tubes`, `list_tubes_watched` | Selected name, validated watch count, explicit `NotIgnored`, or tube-name array |
 | `pause_tube` | Boolean for paused or missing tube. A delay of zero resumes reservations |
 | `peek`, `peek_ready`, `peek_delayed`, `peek_buried` | Optional `Job { id: UInt64, body: Bytes }`; `None` means not found |
 | `stats`, `stats_job`, `stats_tube` | String maps, optional for job/tube not-found; required job ID or tube name is checked against the request |
