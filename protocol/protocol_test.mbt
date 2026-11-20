@@ -246,6 +246,14 @@ test "documented flat YAML preserves exact scalar values and tube names" {
     Ok(["default", "jobs_1"]),
   )
   @debug.assert_eq(@protocol.parse_tubes(b"---\n"), Ok([]))
+  @debug.assert_eq(
+    @protocol.parse_tubes(b"---\n- jobs\n- \"jobs\"\n"),
+    Err(@protocol.InvalidYaml("duplicate tube name")),
+  )
+  @debug.assert_eq(
+    @protocol.parse_tubes(b"---\n- jobs\n- Jobs\n"),
+    Ok(["jobs", "Jobs"]),
+  )
   for
     body in [
       b"id: 1\n", b"---\nid: 1", b"---\nid: 1\nid: 2\n", b"---\na: [1]\n", b"---\na: &ref\n",

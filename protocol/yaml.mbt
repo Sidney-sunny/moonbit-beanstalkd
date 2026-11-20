@@ -94,6 +94,7 @@ pub fn parse_tubes(body : Bytes) -> Result[Array[String], ProtocolError] {
     Err(error) => return Err(error)
   }
   let result : Array[String] = []
+  let seen : Map[String, Bool] = Map([])
   for line in lines {
     let scalar = match line.strip_prefix("- ") {
       Some(scalar) => scalar.to_owned()
@@ -106,6 +107,10 @@ pub fn parse_tubes(body : Bytes) -> Result[Array[String], ProtocolError] {
     if !valid_tube(tube) {
       return Err(InvalidYaml("invalid tube name"))
     }
+    if seen.contains(tube) {
+      return Err(InvalidYaml("duplicate tube name"))
+    }
+    seen[tube] = true
     result.push(tube)
   }
   Ok(result)

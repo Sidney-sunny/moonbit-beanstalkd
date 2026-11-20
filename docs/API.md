@@ -47,7 +47,7 @@ Helpers retain a `timeout_ms` argument. `put` defaults to priority 0, delay 0, T
 
 Job IDs remain `UInt64`; priority/delay/TTR and reserve seconds use `UInt32`. Bodies are `Bytes`, never UTF-8 strings. Typed replies include `Inserted`, `Reserved`, `Found`, `Using`, `Watching`, `Kicked`, raw `Ok(Bytes)`, and `Status(ServerStatus)`. `Buried(id)` after `Put` means the server accepted a buried job, so do not replay it.
 
-`parse_stats` returns a flat string map to avoid numeric precision loss. `parse_tubes` returns tube names. These parsers accept only the server's documented flat ASCII subset, rejecting nested YAML, aliases, escapes, and duplicate map keys; they are not general YAML parsers. Raw bytes remain available through `Ok(Bytes)`.
+`parse_stats` returns a flat string map to avoid numeric precision loss. `parse_tubes` returns tube names. These parsers accept only the server's documented flat ASCII subset, rejecting nested YAML, aliases, escapes, duplicate map keys, and duplicate tube names; they are not general YAML parsers. Raw bytes remain available through `Ok(Bytes)`.
 
 ## Deadlines, Failures, and Ownership
 
