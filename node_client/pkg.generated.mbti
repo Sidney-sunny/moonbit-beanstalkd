@@ -46,6 +46,7 @@ pub async fn Client::peek_ready(Self, timeout_ms? : Int32) -> Job?
 pub async fn Client::put(Self, Bytes, priority? : UInt32, delay? : UInt32, ttr? : UInt32, timeout_ms? : Int32) -> PutOutcome
 pub async fn Client::release(Self, UInt64, priority? : UInt32, delay? : UInt32, timeout_ms? : Int32) -> ReleaseOutcome
 pub async fn Client::reserve(Self, timeout_seconds? : UInt32, timeout_ms? : Int32) -> ReserveOutcome
+pub async fn Client::reserve_blocking(Self, timeout_ms? : Int32) -> ReserveOutcome
 pub async fn Client::stats(Self, timeout_ms? : Int32) -> Map[String, String]
 pub async fn Client::stats_job(Self, UInt64, timeout_ms? : Int32) -> Map[String, String]?
 pub async fn Client::stats_tube(Self, String, timeout_ms? : Int32) -> Map[String, String]?

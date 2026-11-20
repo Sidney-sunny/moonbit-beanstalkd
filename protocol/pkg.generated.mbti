@@ -20,6 +20,7 @@ pub(all) enum Command {
   Watch(String)
   Ignore(String)
   Put(UInt32, UInt32, UInt32, Bytes)
+  Reserve
   ReserveWithTimeout(UInt32)
   Delete(UInt64)
   Release(UInt64, UInt32, UInt32)

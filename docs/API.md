@@ -28,18 +28,18 @@ The typed `Client` helpers avoid manual reply matching for common operations:
 
 | Helper group | Return values |
 | --- | --- |
-| `put`, `reserve`, `release` | `PutOutcome`, `ReserveOutcome`, `ReleaseOutcome`; buried acceptance, timeout, deadline-soon, and not-found remain distinct |
+| `put`, `reserve`, `reserve_blocking`, `release` | `PutOutcome`, `ReserveOutcome`, `ReleaseOutcome`; buried acceptance, timeout, deadline-soon, and not-found remain distinct |
 | `delete`, `bury`, `touch`, `kick_job`; `kick` | Boolean for success/not-found; count for batch kick |
 | `use_tube`, `watch`, `ignore_tube`, `list_tube_used`, `list_tubes`, `list_tubes_watched` | Selected name, watch count, explicit `NotIgnored`, or tube-name array |
 | `peek`, `peek_ready`, `peek_delayed`, `peek_buried` | Optional `Job { id: UInt64, body: Bytes }`; `None` means not found |
 | `stats`, `stats_job`, `stats_tube` | String maps, optional for job/tube not-found; required job ID or tube name is checked against the request |
 
-Helpers retain a `timeout_ms` argument. `put` defaults to priority 0, delay 0, TTR 60 seconds; `reserve` defaults to a zero-second server wait. Complete server errors not represented as normal outcomes raise `OperationError::ServerRejected(status)`. Unsupported but fully framed YAML raises `InvalidDocument`; a missing or wrong correlated stats identity invalidates the connection. The low-level `execute` API remains available for exact command/reply access.
+Helpers retain a `timeout_ms` argument. `put` defaults to priority 0, delay 0, TTR 60 seconds; `reserve` defaults to a zero-second server wait. `reserve_blocking` waits for a job under the transport deadline and can also return `DeadlineSoon`. Complete server errors not represented as normal outcomes raise `OperationError::ServerRejected(status)`. Unsupported but fully framed YAML raises `InvalidDocument`; a missing or wrong correlated stats identity invalidates the connection. The low-level `execute` API remains available for exact command/reply access.
 
 | Family | Commands |
 | --- | --- |
 | Tubes | `Use`, `Watch`, `Ignore`, `ListTubes`, `ListTubeUsed`, `ListTubesWatched` |
-| Publish and receive | `Put(priority, delay, ttr, Bytes)`, `ReserveWithTimeout(seconds)` |
+| Publish and receive | `Put(priority, delay, ttr, Bytes)`, `Reserve`, `ReserveWithTimeout(seconds)` |
 | Lifecycle | `Delete`, `Release`, `Bury`, `Kick`, `KickJob`, `Touch` |
 | Inspection | `Peek`, `PeekReady`, `PeekDelayed`, `PeekBuried`, `Stats`, `StatsJob`, `StatsTube` |
 

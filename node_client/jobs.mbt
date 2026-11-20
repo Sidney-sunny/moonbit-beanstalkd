@@ -104,6 +104,21 @@ pub async fn Client::reserve(
 }
 
 ///|
+/// Wait for a job until the transport deadline. A deadline-soon reply is a
+/// normal outcome and the server does not have a separate waiting timeout.
+pub async fn Client::reserve_blocking(
+  self : Client,
+  timeout_ms~ : Int32 = 5000,
+) -> ReserveOutcome {
+  match self.execute(@protocol.Reserve, timeout_ms~) {
+    Reserved(id, body) => ReserveOutcome::Reserved({ id, body, })
+    Status(DeadlineSoon) => ReserveOutcome::DeadlineSoon
+    Status(TimedOut) => ReserveOutcome::TimedOut
+    reply => reject_operation(reply)
+  }
+}
+
+///|
 /// Return false for NOT_FOUND, true for a deleted job.
 pub async fn Client::delete(
   self : Client,

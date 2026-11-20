@@ -172,3 +172,20 @@ async test "rejected put raises exact server status without losing synchronizati
   assert_eq(client.put(b"y"), @node_client.PutOutcome::Inserted(9UL))
   assert_eq(script.failure(), "")
 }
+
+///|
+async test "blocking reserve returns binary jobs and deadline-soon replies" {
+  let script = start_script([b"reserve\r\n", b"reserve\r\n"], [
+    b"RESERVED 18446744073709551615 2\r\n\x00\xff\r\n", b"DEADLINE_SOON\r\n",
+  ]).wait()
+  defer script.close()
+  let client = @node_client.connect("127.0.0.1", script.port())
+  defer client.close()
+  assert_eq(
+    client.reserve_blocking(),
+    @node_client.Reserved({ id: 18446744073709551615UL, body: b"\x00\xff", }),
+  )
+  assert_eq(client.reserve_blocking(), @node_client.DeadlineSoon)
+  assert_true(client.is_open())
+  assert_eq(script.failure(), "")
+}

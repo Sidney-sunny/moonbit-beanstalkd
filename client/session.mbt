@@ -95,7 +95,7 @@ fn accepts(command : @protocol.Command, reply : @protocol.Reply) -> Bool {
     (ListTubeUsed, Using(_)) => true
     (Watch(_), Watching(count)) | (Ignore(_), Watching(count)) => count > 0UL
     (Put(_, _, _, _), Inserted(_) | Buried(_)) => true
-    (ReserveWithTimeout(_), Reserved(_, _)) => true
+    (Reserve | ReserveWithTimeout(_), Reserved(_, _)) => true
     (Peek(expected_id), Found(actual_id, _)) => expected_id == actual_id
     (PeekReady | PeekDelayed | PeekBuried, Found(_, _)) => true
     (Kick(bound), Kicked(count)) => count <= bound.to_uint64()
@@ -105,7 +105,7 @@ fn accepts(command : @protocol.Command, reply : @protocol.Reply) -> Bool {
       match (command, status) {
         (_, OutOfMemory | InternalError | BadFormat | UnknownCommand) => true
         (Put(_, _, _, _), JobTooBig | Draining | ExpectedCrlf) => true
-        (ReserveWithTimeout(_), TimedOut | DeadlineSoon) => true
+        (Reserve | ReserveWithTimeout(_), TimedOut | DeadlineSoon) => true
         (Ignore(_), NotIgnored) => true
         (Delete(_), Deleted | NotFound) => true
         (Release(_, _, _), Released | Buried | NotFound) => true

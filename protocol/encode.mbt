@@ -51,6 +51,7 @@ pub fn encode(command : Command) -> Result[Bytes, ProtocolError] {
       buffer.write_bytes(b"\r\n")
       return Ok(buffer.to_bytes())
     }
+    Reserve => "reserve\r\n"
     ReserveWithTimeout(seconds) => "reserve-with-timeout \{seconds}\r\n"
     Delete(id) => "delete \{id}\r\n"
     Release(id, priority, delay) => "release \{id} \{priority} \{delay}\r\n"
