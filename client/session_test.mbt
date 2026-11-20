@@ -138,3 +138,22 @@ test "watch acknowledgements reflect additions, no-ops, and last-tube refusal" {
   assert_eq(session.watching_count(), 1UL)
   assert_false(session.is_usable())
 }
+
+///|
+test "list-tube-used cannot replace the acknowledged producer tube" {
+  let session = @client.Session::new()
+  ignore(session.begin(@protocol.Use("imports")))
+  assert_eq(
+    session.feed(b"USING imports\r\n"),
+    Ok(Some(@protocol.Using("imports"))),
+  )
+  ignore(session.begin(@protocol.ListTubeUsed))
+  assert_eq(
+    session.feed(b"USING imports\r\n"),
+    Ok(Some(@protocol.Using("imports"))),
+  )
+  ignore(session.begin(@protocol.ListTubeUsed))
+  assert_eq(session.feed(b"USING default\r\n"), Err(@client.UnexpectedReply))
+  assert_eq(session.used_tube(), "imports")
+  assert_false(session.is_usable())
+}

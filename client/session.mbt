@@ -96,7 +96,7 @@ fn Session::accepts(
 ) -> Bool {
   match (command, reply) {
     (Use(tube), Using(actual)) => tube == actual
-    (ListTubeUsed, Using(_)) => true
+    (ListTubeUsed, Using(actual)) => actual == self.used_tube
     (Watch(tube), Watching(count)) =>
       count ==
       self.watching_count() +

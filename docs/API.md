@@ -51,7 +51,7 @@ Job IDs remain `UInt64`; priority/delay/TTR and reserve seconds use `UInt32`. Bo
 
 ## Deadlines, Failures, and Ownership
 
-`connect(host, port, timeout_ms=5000, max_body=1048576)` includes a bounded connect deadline. `Client::execute(command, timeout_ms=5000)` allows one request at a time, with one absolute deadline covering all writes and reads. A concurrent call raises `SessionFailure(Busy)` without cancelling the active call. Choose a request deadline longer than a nonzero server reserve timeout plus network margin.
+`connect(host, port, timeout_ms=5000, max_body=1048576)` includes a bounded connect deadline. `Client::execute(command, timeout_ms=5000)` allows one request at a time, with one absolute deadline covering all writes and reads. A concurrent call raises `SessionFailure(Busy)` without cancelling the active call. `list_tube_used` checks that the server confirms the selected tube. Choose a request deadline longer than a nonzero server reserve timeout plus network margin.
 
 A complete server `Status(TimedOut)` is a normal reply and preserves connection usability. A transport `TransportError("TIMEOUT", ...)`, cancellation, malformed/truncated reply, unexpected command/reply pairing, or unsolicited data invalidates the connection. `RequestError` reports local/session errors separately. `close()` is idempotent and cancels pending work. There is no implicit reconnection, publication replay, deduplication, or exactly-once guarantee.
 
