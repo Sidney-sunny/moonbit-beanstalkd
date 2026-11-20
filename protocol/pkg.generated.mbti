@@ -22,6 +22,7 @@ pub(all) enum Command {
   Put(UInt32, UInt32, UInt32, Bytes)
   Reserve
   ReserveWithTimeout(UInt32)
+  ReserveJob(UInt64)
   Delete(UInt64)
   Release(UInt64, UInt32, UInt32)
   Bury(UInt64, UInt32)

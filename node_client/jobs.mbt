@@ -119,6 +119,20 @@ pub async fn Client::reserve_blocking(
 }
 
 ///|
+/// Reserve a specific job by ID. A missing or already reserved job returns None.
+pub async fn Client::reserve_job(
+  self : Client,
+  id : UInt64,
+  timeout_ms~ : Int32 = 5000,
+) -> Job? {
+  match self.execute(@protocol.ReserveJob(id), timeout_ms~) {
+    Reserved(id, body) => Some({ id, body, })
+    Status(NotFound) => None
+    reply => reject_operation(reply)
+  }
+}
+
+///|
 /// Return false for NOT_FOUND, true for a deleted job.
 pub async fn Client::delete(
   self : Client,

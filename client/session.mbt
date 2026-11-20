@@ -96,6 +96,8 @@ fn accepts(command : @protocol.Command, reply : @protocol.Reply) -> Bool {
     (Watch(_), Watching(count)) | (Ignore(_), Watching(count)) => count > 0UL
     (Put(_, _, _, _), Inserted(_) | Buried(_)) => true
     (Reserve | ReserveWithTimeout(_), Reserved(_, _)) => true
+    (ReserveJob(expected_id), Reserved(actual_id, _)) =>
+      expected_id == actual_id
     (Peek(expected_id), Found(actual_id, _)) => expected_id == actual_id
     (PeekReady | PeekDelayed | PeekBuried, Found(_, _)) => true
     (Kick(bound), Kicked(count)) => count <= bound.to_uint64()
@@ -107,6 +109,7 @@ fn accepts(command : @protocol.Command, reply : @protocol.Reply) -> Bool {
         (Put(_, _, _, _), JobTooBig | Draining | ExpectedCrlf) => true
         (Reserve | ReserveWithTimeout(_), TimedOut | DeadlineSoon) => true
         (Ignore(_), NotIgnored) => true
+        (ReserveJob(_), NotFound) => true
         (Delete(_), Deleted | NotFound) => true
         (Release(_, _, _), Released | Buried | NotFound) => true
         (Bury(_, _), Buried | NotFound) => true

@@ -189,3 +189,34 @@ async test "blocking reserve returns binary jobs and deadline-soon replies" {
   assert_true(client.is_open())
   assert_eq(script.failure(), "")
 }
+
+///|
+async test "reserve by ID correlates the job and preserves a not-found reply" {
+  let script = start_script(
+    [
+      b"reserve-job 9\r\n", b"reserve-job 18446744073709551615\r\n", b"reserve-job 10\r\n",
+    ],
+    [
+      b"NOT_FOUND\r\n", b"RESERVED 18446744073709551615 2\r\n\x00\xff\r\n", b"RESERVED 11 0\r\n\r\n",
+    ],
+  ).wait()
+  defer script.close()
+  let client = @node_client.connect("127.0.0.1", script.port())
+  defer client.close()
+  assert_eq(client.reserve_job(9UL), None)
+  assert_true(client.is_open())
+  assert_eq(
+    client.reserve_job(18446744073709551615UL),
+    Some({ id: 18446744073709551615UL, body: b"\x00\xff", }),
+  )
+  let mut rejected = false
+  try {
+    let _ = client.reserve_job(10UL)
+  } catch {
+    @node_client.SessionFailure(@client.UnexpectedReply) => rejected = true
+    error => raise error
+  }
+  assert_true(rejected)
+  assert_false(client.is_open())
+  assert_eq(script.failure(), "")
+}

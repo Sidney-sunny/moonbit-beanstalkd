@@ -53,6 +53,7 @@ pub fn encode(command : Command) -> Result[Bytes, ProtocolError] {
     }
     Reserve => "reserve\r\n"
     ReserveWithTimeout(seconds) => "reserve-with-timeout \{seconds}\r\n"
+    ReserveJob(id) => "reserve-job \{id}\r\n"
     Delete(id) => "delete \{id}\r\n"
     Release(id, priority, delay) => "release \{id} \{priority} \{delay}\r\n"
     Bury(id, priority) => "bury \{id} \{priority}\r\n"
