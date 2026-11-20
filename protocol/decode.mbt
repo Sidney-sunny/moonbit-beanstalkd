@@ -64,7 +64,7 @@ pub fn Decoder::feed(
   let retained = self.buffered_bytes()
   if bytes.length() > self.max_buffer - retained {
     let error = BufferTooLarge(self.max_buffer)
-    self.failure = Some(error)
+    self.poison(error)
     return Err(error)
   }
   if self.start > 0 {
@@ -174,11 +174,36 @@ fn parse_header(
 }
 
 ///|
+fn Decoder::discard_buffer(self : Decoder) -> Unit {
+  self.data = []
+  self.start = 0
+  self.scan = 0
+  self.pending = None
+}
+
+///|
+fn Decoder::consume_reply(self : Decoder, end : Int32) -> Unit {
+  if end == self.data.length() {
+    self.discard_buffer()
+  } else {
+    self.start = end
+    self.scan = end
+    self.pending = None
+  }
+}
+
+///|
+fn Decoder::poison(self : Decoder, error : ProtocolError) -> Unit {
+  self.discard_buffer()
+  self.failure = Some(error)
+}
+
+///|
 fn Decoder::fail(
   self : Decoder,
   error : ProtocolError,
 ) -> Result[Reply?, ProtocolError] {
-  self.failure = Some(error)
+  self.poison(error)
   Err(error)
 }
 
@@ -213,9 +238,7 @@ pub fn Decoder::take(self : Decoder) -> Result[Reply?, ProtocolError] {
       Found(id, _) => Reply::Found(id, body)
       Ok(_) => Reply::Ok(body)
     }
-    self.start = end + 2
-    self.scan = self.start
-    self.pending = None
+    self.consume_reply(end + 2)
     return Ok(Some(reply))
   }
   while self.scan < self.data.length() {
@@ -236,7 +259,10 @@ pub fn Decoder::take(self : Decoder) -> Result[Reply?, ProtocolError] {
       self.scan = self.start
       match parse_header(line, self.max_body) {
         Err(error) => return self.fail(error)
-        Ok(Complete(reply)) => return Ok(Some(reply))
+        Ok(Complete(reply)) => {
+          self.consume_reply(self.start)
+          return Ok(Some(reply))
+        }
         Ok(Body(header)) => {
           self.pending = Some(header)
           return self.take()
@@ -265,7 +291,7 @@ pub fn Decoder::finish(self : Decoder) -> Result[Unit, ProtocolError] {
     return Err(error)
   }
   if self.buffered_bytes() != 0 || self.pending is Some(_) {
-    self.failure = Some(Truncated)
+    self.poison(Truncated)
     return Err(Truncated)
   }
   Ok(())
