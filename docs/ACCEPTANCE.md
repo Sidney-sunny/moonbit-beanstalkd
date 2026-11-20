@@ -8,7 +8,7 @@ Checked implementation items identify capabilities or checks present in the sour
 
 - [x] Pin MoonBit, Node.js, Go, and the Beanstalkd source release/checksum; provide bounded local-server and CI runners.
 - [x] Separate portable protocol/session packages for JS and wasm-gc from Node.js-only sockets and async APIs.
-- [x] Encode and decode use/watch/ignore, put, reserve-with-timeout, delete/release/bury/kick/kick-job/touch/peek, and stats/list families; document exact variants in the [API](API.md).
+- [x] Encode and decode use/watch/ignore, put, reserve, reserve-with-timeout, reserve-job, pause-tube, delete/release/bury/kick/kick-job/touch/peek, and stats/list families; document exact variants in the [API](API.md).
 - [x] Preserve binary bodies, NUL/CRLF, UInt64 IDs, and unsigned 32-bit priority/delay/TTR without text conversion or narrowing.
 - [x] Bound incremental decoding and validate CRLF, lengths, integers, expected replies, and configured resource limits.
 - [x] Distinguish server states from protocol/transport failures; serialize exchanges and invalidate uncertain connections without automatic publication replay.
@@ -18,6 +18,7 @@ Checked implementation items identify capabilities or checks present in the sour
 
 - [x] Adapt pinned Go transcript cases with MIT provenance in [protocol/NOTICE](../protocol/NOTICE), rather than relying only on self-generated round trips.
 - [x] Provide bidirectional Go/MoonBit producer/consumer checks comparing exact binary bytes and IDs; PHP interoperability is not a verified deliverable.
+- [x] Check a waiting worker, paused and resumed reservation, and a delayed job reserved by ID on the pinned server.
 - [x] Provide real-server lifecycle and touch/TTR ownership checks with observable states, bounded waits, and queue cleanup assertions.
 - [x] Provide [CSV import](../scenarios/CSV_IMPORT.md) with separate processes, fixed input, exact task bytes, row count, deletion, and empty-queue assertions.
 - [x] Provide [retry/quarantine](../scenarios/RETRY_QUARANTINE.md) with delayed release, later success, separately buried invalid input, inspection, kick, and controlled reprocessing.

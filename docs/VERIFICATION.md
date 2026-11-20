@@ -23,7 +23,7 @@ The runner checks tool versions, then runs formatting, JS and wasm-gc check/buil
 | Portable protocol and session | Literal bytes, integer bounds, decoder splits, malformed replies, resource limits, correlation, and ordered state |
 | Node TCP and async client | Fragmented loopback traffic, deadlines, cancellation, backpressure, connection invalidation, and typed helpers |
 | Server runner | Occupied-port rejection, bounded execution, and cleanup of its own server |
-| Pinned-server programs | Lifecycle, CSV import, retry/quarantine, touch/TTR ownership, and bidirectional Go interoperability |
+| Pinned-server programs | Lifecycle, blocking and targeted reservations, tube pause and resume, CSV import, retry/quarantine, touch/TTR ownership, and bidirectional Go interoperability |
 | Package consumer | Actual local ZIP contents and a separate consumer module; not a Mooncakes registry install |
 | Protocol benchmark | Dataset hash, warmup, operation counts, exact tool versions, and local encoding/decoding measurements |
 
