@@ -36,6 +36,12 @@ extern "js" fn start_fixture(mode : String) -> @js_async.Promise[Fixture] =
   #|           socket.write("INSERTED 7\r\n");
   #|         } else if (mode === "delayed") {
   #|           setTimeout(() => { if (!socket.destroyed) socket.write("DELETED\r\n"); }, 75);
+  #|         } else if (mode === "eof-header") {
+  #|           socket.end("RESERV");
+  #|         } else if (mode === "eof-body") {
+  #|           socket.end("RESERVED 7 3\r\na");
+  #|         } else if (mode === "eof-terminator") {
+  #|           socket.end("RESERVED 7 1\r\na\r");
   #|         } else if (mode === "trailing") {
   #|           socket.write("DELETED\r\nDELETED\r\n");
   #|         }
@@ -225,4 +231,25 @@ async test "invalid constructor limits reject before opening a TCP connection" {
   }
   @async.sleep(20)
   assert_eq(fixture.connection_count(), 0)
+}
+
+///|
+async test "incomplete TCP headers bodies and terminators report EOF without reuse" {
+  for mode in ["eof-header", "eof-body", "eof-terminator"] {
+    let fixture = start_fixture(mode).wait()
+    defer fixture.close()
+    let client = @node_client.connect("127.0.0.1", fixture.port())
+    defer client.close()
+    let mut reached_eof = false
+    try {
+      let _ = client.reserve(timeout_ms=1000)
+    } catch {
+      @node_tcp.TransportError("EOF", _) => reached_eof = true
+      error => raise error
+    }
+    assert_true(reached_eof)
+    assert_closed(client)
+    assert_eq(fixture.request_count(), 1)
+    assert_eq(fixture.connection_count(), 1)
+  }
 }
