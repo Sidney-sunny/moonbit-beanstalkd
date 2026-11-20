@@ -6,7 +6,7 @@
 
 Verification results belong to the exact source revision and command that produced them. This page describes the checks and their evidence; it does not claim that a new revision passed because an earlier local run or hosted job succeeded.
 
-Record `git rev-parse HEAD`, the working-tree status, and the terminal or CI log with each run. A run with uncommitted changes must identify them. Component-only snapshots establish only the checks and files included in that snapshot.
+The report records the Git revision and whether tracked files were clean at the beginning and end of a complete run. Keep the terminal or CI log with the report. Identify any uncommitted inputs separately. Component-only snapshots establish only the checks and files included in that snapshot.
 
 ## Run the Checks
 
@@ -37,11 +37,11 @@ node scripts/with-beanstalkd.mjs -- moon run examples/lifecycle --target js
 
 | Artifact | Contents |
 | --- | --- |
-| `_build/verification.json` | Required and observed tool versions, command exit codes, durations, and overall completion |
+| `_build/verification.json` | Source revision, tracked working-tree status, tool versions, command exit codes, durations, and overall completion |
 | `_build/downstream/result.json` | Package archive hash, content checks, consumer results, and explicit registry/publication flags |
 | `_build/benchmark.json` | Fixture hash, workload, platform, tool versions, and measurements |
 
-A successful full run requires `complete: true`, every recorded command exiting with code zero, and the corresponding assertions in the saved log. The verification JSON does not replace the source revision or test-output log. Preserve artifacts before rerunning because their default paths are overwritten. Report actual test counts from that run; JS and wasm-gc repeat the portable cases and must not be summed as independent cases.
+A successful full run requires `complete: true`, every recorded command exiting with code zero, and the corresponding assertions in the saved log. Keep the test-output log alongside the verification JSON. Preserve artifacts before rerunning because their default paths are overwritten. Report actual test counts from that run; JS and wasm-gc repeat the portable cases and must not be summed as independent cases.
 
 The [CI workflow](../.github/workflows/ci.yml) is configured to archive these artifacts. Confirm the exact commit, conclusion, and available artifacts in the [hosted runs](https://github.com/Sidney-sunny/moonbit-beanstalkd/actions) before claiming hosted success. A workflow file or an artifact from another revision is not that evidence.
 

@@ -15,7 +15,7 @@ Use versions in `toolchain.json`. From the repository root:
 - `moon build --target js`: compile the JS target.
 - `moon test --target js`: execute MoonBit tests on JS.
 
-Repeat check/build/test with `--target wasm-gc` for portable packages. `node scripts/verify.mjs` runs tests, server scenarios, interoperability, local package consumption, and benchmarks. It needs Go, `make`, a C compiler, and `tar`; Windows uses existing Debian WSL. Use `pnpm` for Node dependencies; none are required.
+Repeat check/build/test with `--target wasm-gc` for portable packages. `node scripts/verify.mjs` runs tests, server scenarios, interoperability, local package consumption, and benchmarks. It needs a Git checkout, Go, `make`, a C compiler, and `tar`; Windows uses existing Debian WSL. Use `pnpm` for Node dependencies; none are required.
 
 ## Coding Style & Naming Conventions
 

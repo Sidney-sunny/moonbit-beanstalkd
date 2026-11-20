@@ -37,11 +37,31 @@ function run(executable, args, capture = false) {
   return result.stdout;
 }
 
+function sourceState() {
+  const result = spawnSync("git", ["status", "--porcelain=v2", "--branch", "--untracked-files=no"], {
+    cwd: root,
+    windowsHide: true,
+    timeout: 15_000,
+    encoding: "utf8",
+    stdio: "pipe",
+  });
+  if (result.error || result.status !== 0) {
+    throw new Error(`Cannot read source revision: ${result.error?.message || result.stderr || result.status}`);
+  }
+  const lines = result.stdout.trim().split(/\r?\n/);
+  const revision = lines.find((line) => line.startsWith("# branch.oid "))?.slice(13);
+  if (!revision || !/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/.test(revision)) {
+    throw new Error("Verification requires a Git checkout with a committed revision");
+  }
+  return { revision, trackedFilesClean: lines.every((line) => line.startsWith("# ")) };
+}
+
 function withServer(executable, args) {
   run(process.execPath, ["scripts/with-beanstalkd.mjs", "--", executable, ...args]);
 }
 
 try {
+  evidence.source = sourceState();
   if (process.versions.node !== pin.node) {
     throw new Error(`Expected Node ${pin.node}, got ${process.versions.node}`);
   }
@@ -70,6 +90,11 @@ try {
   }
   withServer(process.execPath, ["scripts/downstream-consumer.mjs"]);
   run(process.execPath, ["benchmark/run.mjs"]);
+  evidence.sourceAtFinish = sourceState();
+  if (evidence.source.revision !== evidence.sourceAtFinish.revision ||
+      (evidence.source.trackedFilesClean && !evidence.sourceAtFinish.trackedFilesClean)) {
+    throw new Error("Source changed during verification");
+  }
   evidence.complete = true;
 } catch (error) {
   evidence.error = error.message;
