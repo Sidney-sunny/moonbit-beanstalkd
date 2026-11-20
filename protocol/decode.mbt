@@ -153,6 +153,7 @@ fn parse_header(
         "BURIED" => Buried
         "KICKED" => Kicked
         "TOUCHED" => Touched
+        "PAUSED" => Paused
         "TIMED_OUT" => TimedOut
         "DEADLINE_SOON" => DeadlineSoon
         "NOT_FOUND" => NotFound

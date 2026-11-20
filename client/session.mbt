@@ -115,6 +115,7 @@ fn accepts(command : @protocol.Command, reply : @protocol.Reply) -> Bool {
         (Bury(_, _), Buried | NotFound) => true
         (KickJob(_), Kicked | NotFound) => true
         (Touch(_), Touched | NotFound) => true
+        (PauseTube(_, _), Paused | NotFound) => true
         (
           Peek(_)
           | PeekReady

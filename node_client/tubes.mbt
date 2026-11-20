@@ -93,3 +93,18 @@ pub async fn Client::list_tubes_watched(
 ) -> Array[String] {
   tube_document(self.execute(@protocol.ListTubesWatched, timeout_ms~))
 }
+
+///|
+/// Pause new reservations from an existing tube. A delay of zero resumes them.
+pub async fn Client::pause_tube(
+  self : Client,
+  tube : String,
+  delay : UInt32,
+  timeout_ms~ : Int32 = 5000,
+) -> Bool {
+  match self.execute(@protocol.PauseTube(tube, delay), timeout_ms~) {
+    Status(Paused) => true
+    Status(NotFound) => false
+    reply => reject_operation(reply)
+  }
+}

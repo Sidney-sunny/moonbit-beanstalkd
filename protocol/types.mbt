@@ -22,6 +22,7 @@ pub(all) enum Command {
   Stats
   StatsJob(UInt64)
   StatsTube(String)
+  PauseTube(String, UInt32)
   ListTubes
   ListTubeUsed
   ListTubesWatched
@@ -42,6 +43,7 @@ pub(all) enum ServerStatus {
   Buried
   Kicked
   Touched
+  Paused
   TimedOut
   DeadlineSoon
   NotFound

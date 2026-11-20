@@ -42,6 +42,12 @@ pub fn encode(command : Command) -> Result[Bytes, ProtocolError] {
       }
       "\{verb} \{tube}\r\n"
     }
+    PauseTube(tube, delay) => {
+      if !valid_tube(tube) {
+        return Err(InvalidTube(tube))
+      }
+      "pause-tube \{tube} \{delay}\r\n"
+    }
     Put(priority, delay, ttr, body) => {
       let buffer = @buffer.Buffer()
       buffer.write_string_utf8(

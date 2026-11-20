@@ -32,6 +32,7 @@ The typed `Client` helpers avoid manual reply matching for common operations:
 | `reserve_job` | Optional `Job` for a specific ID. `None` means the server returned `NOT_FOUND` |
 | `delete`, `bury`, `touch`, `kick_job`; `kick` | Boolean for success/not-found; count for batch kick |
 | `use_tube`, `watch`, `ignore_tube`, `list_tube_used`, `list_tubes`, `list_tubes_watched` | Selected name, watch count, explicit `NotIgnored`, or tube-name array |
+| `pause_tube` | Boolean for paused or missing tube. A delay of zero resumes reservations |
 | `peek`, `peek_ready`, `peek_delayed`, `peek_buried` | Optional `Job { id: UInt64, body: Bytes }`; `None` means not found |
 | `stats`, `stats_job`, `stats_tube` | String maps, optional for job/tube not-found; required job ID or tube name is checked against the request |
 
@@ -39,7 +40,7 @@ Helpers retain a `timeout_ms` argument. `put` defaults to priority 0, delay 0, T
 
 | Family | Commands |
 | --- | --- |
-| Tubes | `Use`, `Watch`, `Ignore`, `ListTubes`, `ListTubeUsed`, `ListTubesWatched` |
+| Tubes | `Use`, `Watch`, `Ignore`, `ListTubes`, `ListTubeUsed`, `ListTubesWatched`, `PauseTube(tube, delay)` |
 | Publish and receive | `Put(priority, delay, ttr, Bytes)`, `Reserve`, `ReserveWithTimeout(seconds)`, `ReserveJob(id)` |
 | Lifecycle | `Delete`, `Release`, `Bury`, `Kick`, `KickJob`, `Touch` |
 | Inspection | `Peek`, `PeekReady`, `PeekDelayed`, `PeekBuried`, `Stats`, `StatsJob`, `StatsTube` |

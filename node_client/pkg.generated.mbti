@@ -39,6 +39,7 @@ pub async fn Client::kick_job(Self, UInt64, timeout_ms? : Int32) -> Bool
 pub async fn Client::list_tube_used(Self, timeout_ms? : Int32) -> String
 pub async fn Client::list_tubes(Self, timeout_ms? : Int32) -> Array[String]
 pub async fn Client::list_tubes_watched(Self, timeout_ms? : Int32) -> Array[String]
+pub async fn Client::pause_tube(Self, String, UInt32, timeout_ms? : Int32) -> Bool
 pub async fn Client::peek(Self, UInt64, timeout_ms? : Int32) -> Job?
 pub async fn Client::peek_buried(Self, timeout_ms? : Int32) -> Job?
 pub async fn Client::peek_delayed(Self, timeout_ms? : Int32) -> Job?

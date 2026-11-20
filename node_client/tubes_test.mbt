@@ -73,3 +73,30 @@ async test "unsupported list YAML raises a document error while complete framing
   assert_eq(client.list_tube_used(), "default")
   assert_eq(script.failure(), "")
 }
+
+///|
+async test "pause uses validated names and supports an explicit zero-delay resume" {
+  let script = start_script(
+    [
+      b"pause-tube missing 1\r\n", b"pause-tube a;b 4294967295\r\n", b"pause-tube a;b 0\r\n",
+    ],
+    [b"NOT_FOUND\r\n", b"PAUSED\r\n", b"PAUSED\r\n"],
+  ).wait()
+  defer script.close()
+  let client = @node_client.connect("127.0.0.1", script.port())
+  defer client.close()
+  let mut invalid = false
+  try {
+    let _ = client.pause_tube("invalid\r\n", 0U)
+  } catch {
+    @node_client.SessionFailure(@client.Protocol(@protocol.InvalidTube(_))) =>
+      invalid = true
+    error => raise error
+  }
+  assert_true(invalid)
+  assert_false(client.pause_tube("missing", 1U))
+  assert_true(client.pause_tube("a;b", 4294967295U))
+  assert_true(client.pause_tube("a;b", 0U))
+  assert_true(client.is_open())
+  assert_eq(script.failure(), "")
+}
